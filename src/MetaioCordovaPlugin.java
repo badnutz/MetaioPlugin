@@ -44,7 +44,8 @@ public class MetaioCordovaPlugin extends CordovaPlugin {
 			Context context = this.cordova.getActivity()
 					.getApplicationContext();
 			// extract all the assets
-			mTask = new AssetsExtracter(context);
+			mTask = new AssetsExtracter(context, message);
+			Log.d("Die Message aus Cordova ist: ", message);
 			mTask.execute(0);
 
 			callbackContext.success(message);
@@ -59,9 +60,11 @@ public class MetaioCordovaPlugin extends CordovaPlugin {
 	 */
 	private class AssetsExtracter extends AsyncTask<Integer, Integer, Boolean> {
 		private Context mContext;
+		private String mMessage;
 
-		public AssetsExtracter(Context context) {
+		public AssetsExtracter(Context context, String message) {
 			mContext = context;
+			mMessage = message;
 		}
 
 		@Override
@@ -70,6 +73,14 @@ public class MetaioCordovaPlugin extends CordovaPlugin {
 
 		@Override
 		protected Boolean doInBackground(Integer... params) {
+		
+			return true;
+		}
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			// create AREL template and present it
+			Log.d("Die Message aus Cordova ist: ", mMessage);
 			File dataFile = Environment.getExternalStorageDirectory();
 			File[] allFiles = dataFile.listFiles();
 			Log.d("Pfad von Root",
@@ -93,17 +104,11 @@ public class MetaioCordovaPlugin extends CordovaPlugin {
 
 			Intent intent = new Intent(mContext, ARELViewActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.putExtra("com.HelloPlugin.test.AREL_SCENE",
+			intent.putExtra("com.scheer.interact4App.AREL_SCENE",
 					arelConfigFilePath);
 			// mLaunchingTutorial = true;
 			mContext.startActivity(intent);
 
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			// create AREL template and present it
 
 		}
 

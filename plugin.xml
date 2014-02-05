@@ -10,7 +10,7 @@
 
 
     <js-module src="www/MetaioView.js" name="Metaio">
-        <clobbers target="metaio" />
+        <clobbers target="window.metaio" />
     </js-module>
 
     <!-- android -->
