@@ -21,6 +21,6 @@
             </feature>
         </config-file>
 
-        <source-file src="src/MetaioCordovaPlugin.java" target-dir="org/apache/cordova/MetaioPlugin" />      
+        <source-file src="src/MetaioCordovaPlugin.java" target-dir="src/org/apache/cordova/MetaioPlugin" />      
      </platform>          
 </plugin>
