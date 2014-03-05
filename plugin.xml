@@ -17,7 +17,7 @@
     <platform name="android">
         <config-file target="res/xml/config.xml" parent="/*">
             <feature name="Metaio">
-                <param name="android-package" value="org.apache.cordova.MetaioPlugin"/>
+                <param name="android-package" value="org.apache.cordova.MetaioPlugin.MetaioCordovaPlugin"/>
             </feature>
         </config-file>
 
