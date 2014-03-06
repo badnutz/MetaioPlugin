@@ -1,25 +1,29 @@
 package org.apache.cordova.MetaioPlugin;
 
-import java.io.File;
 import org.apache.cordova.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.content.Context;
-import android.util.Log;
 import com.metaio.sdk.MetaioDebug;
 
+/**
+ * @author Michael Bednorz
+ * @version 1.0
+ * This plugin will start the Metaio ARELActivity.  
+ */
 
 public class MetaioCordovaPlugin extends CordovaPlugin {
 	private static final String ACTION_STARTAREL = "StartArelView";
-	private AssetsExtracter mTask;
+	private ArelViewStarter task;
 
 	/**
-	 * Task that will extract all the assets
-	 */
-	// private AssetsExtracter mTask;
+	 * Executes the arelViewActivity
+	 * @param action Name of the action which will be called
+	 * @param args  args[0] Name of the Filepath
+	 * @param callbackContext Context for the Callback
+	 * */
 	@Override
 	public boolean execute(String action, JSONArray args,
 			CallbackContext callbackContext) throws JSONException {
@@ -44,9 +48,8 @@ public class MetaioCordovaPlugin extends CordovaPlugin {
 			Context context = this.cordova.getActivity()
 					.getApplicationContext();
 			// extract all the assets
-			mTask = new AssetsExtracter(context, message);
-			Log.d("Die Message aus Cordova ist: ", message);
-			mTask.execute(0);
+			this.task = new ArelViewStarter(context, message);
+			this.task.execute(0);
 
 			callbackContext.success(message);
 		} else {
@@ -54,17 +57,13 @@ public class MetaioCordovaPlugin extends CordovaPlugin {
 		}
 	}
 
-	/**
-	 * This task extracts all the assets to an external or internal location to
-	 * make them accessible to metaio SDK
-	 */
-	private class AssetsExtracter extends AsyncTask<Integer, Integer, Boolean> {
-		private Context mContext;
-		private String mMessage;
+	private class ArelViewStarter extends AsyncTask<Integer, Integer, Boolean> {
+		private Context context;
+		private String message;
 
-		public AssetsExtracter(Context context, String message) {
-			mContext = context;
-			mMessage = message;
+		public ArelViewStarter(Context context, String message) {
+			this.context = context;
+			this.message = message;
 		}
 
 		@Override
@@ -73,42 +72,28 @@ public class MetaioCordovaPlugin extends CordovaPlugin {
 
 		@Override
 		protected Boolean doInBackground(Integer... params) {
-		
+
 			return true;
 		}
 
 		@Override
 		protected void onPostExecute(Boolean result) {
-			// create AREL template and present it
-			Log.d("Die Message aus Cordova ist: ", mMessage);
-			File dataFile = Environment.getExternalStorageDirectory();
-			File[] allFiles = dataFile.listFiles();
-			Log.d("Pfad von Root",
-					dataFile.getAbsolutePath() + "--" + dataFile.getName());
-			String metaioFilepath = "";
-			for (int i = 0; i < allFiles.length; i++) {
-				Log.d("Filepath of " + allFiles[i].getName(),
-						allFiles[i].getPath());
-				if (allFiles[i].getName().equals("MetaioAssets")) {
-					metaioFilepath = allFiles[i].getPath() + "/Tutorial1";
-					Log.d("MetaioFilePath", metaioFilepath);
-				}
-			}
 			// Getting a file path for tracking configuration XML file
-			final String arelConfigFile = "arelConfig1.xml";
-			final String arelConfigFilePath = metaioFilepath + "/"
-					+ arelConfigFile;
-			;
+			final String arelConfigFile = "arelConfig.xml";
+			final String arelConfigFilePath = this.message + "/" + arelConfigFile;
 			MetaioDebug.log("arelConfig to be passed to intent: "
 					+ arelConfigFilePath);
 
-			Intent intent = new Intent(mContext, ARELViewActivity.class);
+			Intent intent = new Intent(this.context, ARELViewActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.putExtra("com.scheer.interact4App.AREL_SCENE",
+			/**
+			 * TODO Change first Parameter with the package name to your cordova
+			 * main java file
+			 * */
+			intent.putExtra("com.metaio.cordova.template.AREL_SCENE",
 					arelConfigFilePath);
 			// mLaunchingTutorial = true;
-			mContext.startActivity(intent);
-
+			this.context.startActivity(intent);
 
 		}
 
